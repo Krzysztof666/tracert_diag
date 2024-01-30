@@ -11,6 +11,7 @@ import os
 import subprocess
 import re
 from rich import print as rprint
+from rich.status import Status
 
 import time
 
@@ -102,7 +103,7 @@ def decimal_to_dms(decimal_coordinates):
 
 def tracert_ip_addresses(target_host='interia.pl'):
     '''
-        Funkcja - za pomocą wyrażenia regularnego - pobiera wszytkie adresy IP
+        Funkcja - za pomocą wyrażenia regularnego - pobiera wszystkie adresy IP
         zwracane przez polecenie systemowe tracert, które znajdują się w nawiasach [ ]
     '''
     try:
@@ -138,13 +139,16 @@ while True:
         rprint('[red]Błędna nazwa domeny. Spróbuj ponownie.')
         continue
     
-rprint(f'[yellow]Oczekiwanie na adresy IP...')
        
 # Start liczenia czasu
 start_time = time.time()
 
-ip_addresses = tracert_ip_addresses(target_host)
+# Spinner animacja
+with Status('Pobieranie adresów') as status:
 
+    ip_addresses = tracert_ip_addresses(target_host)
+
+    status.update()
 # Koniec liczenia czasu
 end_time = time.time()
 
@@ -164,7 +168,7 @@ if ip_addresses:
 else:
         printf(f"[magenta]Nie znaleziono adresów IP w tracert dla {target_host}.")
 
-del hosts[0:3]   # Pomijamy adres hosta docelowego i własny komputera
+del hosts[0:1]   # Pomijamy adres hosta docelowego i własny komputera
     
 rprint(f'Host: {hosts}')
 linijka()
